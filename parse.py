@@ -10,7 +10,7 @@ class MESHTAL:
 	
 	def readmesh(self):
 		if self.skipTill(['Mesh', 'Tally', 'Number', False]) == False:
-			return False, False, False
+			return False, False, False, False
 	  	
 		tallynumber = self.getLineComponents()[3]
 		self.skipLines(1)
@@ -53,7 +53,7 @@ class MESHTAL:
 					self.skipLines(1)
 					erro[z][y] = map(float,self.getLineComponents()[1:])
 		
-		return tallynumber, data, True
+		return tallynumber, data, erro, True
 		
 	def getLine(self):
 		return self.content[self.cursor]
@@ -103,9 +103,10 @@ def main():
     print 'Parsing FMESHES in %s....' % input
     
     while obj.cursor < obj.len - 1:
-      tallynumber, data, suc = obj.readmesh()
+      tallynumber, data, erro, suc = obj.readmesh()
       if suc == True:
         dict[('data'+tallynumber)] = data
+        dict[('erro'+tallynumber)] = erro
         print 'Parsed FMESH%s into data%s variable.' % (tallynumber, tallynumber)
 
     scipy.io.savemat(output, mdict=dict, do_compression=True, oned_as='column', appendmat=True)
@@ -134,7 +135,3 @@ def main():
  
 if __name__ == '__main__':
   main()
-		
-
-
-
